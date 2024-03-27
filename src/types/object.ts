@@ -16,10 +16,10 @@ type Prettify<T> = {
 };
 type Client1Prettify = Prettify<Client1>;
 
-type ForceRequired<T extends Record<string, any>> = {
-  [P in keyof T]-?: T[P] extends object
-    ? ForceRequired<T[P]>
-    : T[P] extends Array
-    ? ForceRequired<T[P][number]>
-    : NonNullable<T[P]>;
-};
+
+// **** RECURSIVE REQUIRED
+type RecursiveRequired<T> = Required<{
+  [P in keyof T]: T[P] extends object | undefined ? RecursiveRequired<Required<T[P]>> : T[P];
+}>;
+type MyNotRequired = { id?: string, contacts?: {id?: string, name?: string}[], config?: { mode?: 'dark' | 'light'}};
+type MyDeepRequired = RecursiveRequired<MyNotRequired>
